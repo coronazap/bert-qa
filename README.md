@@ -121,7 +121,7 @@ BERT-Large, Cased (Whole Word Masking)   | 92.9/86.7       | 86.46
 BERT has been uploaded to [TensorFlow Hub](https://tfhub.dev). See
 `run_classifier_with_tfhub.py` for an example of how to use the TF Hub module,
 or run an example in the browser on
-[Colab](https://colab.sandbox.google.com/github/google-research/bert/blob/master/predicting_movie_reviews_with_bert_on_tf_hub.ipynb).
+[Colab](https://colab.sandbox.google.com/github/google-research/bert_client/blob/master/predicting_movie_reviews_with_bert_on_tf_hub.ipynb).
 
 **\*\*\*\*\* New November 23rd, 2018: Un-normalized multilingual model + Thai +
 Mongolian \*\*\*\*\***
@@ -175,7 +175,7 @@ changes. We did update the implementation of `BasicTokenizer` in
 you forked it. However, we did not change the tokenization API.
 
 For more, see the
-[Multilingual README](https://github.com/google-research/bert/blob/master/multilingual.md).
+[Multilingual README](https://github.com/google-research/bert_client/blob/master/multilingual.md).
 
 **\*\*\*\*\* End new information \*\*\*\*\***
 
@@ -334,7 +334,7 @@ These models are all released under the same license as the source code (Apache
 2.0).
 
 For information about the Multilingual and Chinese model, see the
-[Multilingual README](https://github.com/google-research/bert/blob/master/multilingual.md).
+[Multilingual README](https://github.com/google-research/bert_client/blob/master/multilingual.md).
 
 **When using a cased model, make sure to pass `--do_lower=False` to the training
 scripts. (Or pass `do_lower_case=False` directly to `FullTokenizer` if you're
@@ -434,7 +434,7 @@ Corpus (MRPC) corpus, which only contains 3,600 examples and can fine-tune in a
 few minutes on most GPUs.
 
 ```shell
-export BERT_BASE_DIR=/path/to/bert/uncased_L-12_H-768_A-12
+export BERT_BASE_DIR=/path/to/bert_client/uncased_L-12_H-768_A-12
 export GLUE_DIR=/path/to/glue
 
 python run_classifier.py \
@@ -483,7 +483,7 @@ output folder. Each line will contain output for each sample, columns are the
 class probabilities.
 
 ```shell
-export BERT_BASE_DIR=/path/to/bert/uncased_L-12_H-768_A-12
+export BERT_BASE_DIR=/path/to/bert_client/uncased_L-12_H-768_A-12
 export GLUE_DIR=/path/to/glue
 export TRAINED_CLASSIFIER=/path/to/fine/tuned/classifier
 

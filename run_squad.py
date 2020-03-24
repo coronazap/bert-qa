@@ -40,7 +40,7 @@ flags.DEFINE_string(
     "The config json file corresponding to the pre-trained BERT model. "
     "This specifies the model architecture.")
 
-flags.DEFINE_string("vocab_file", './bert/vocab.txt',
+flags.DEFINE_string("vocab_file", './bert_client/vocab.txt',
                     "The vocabulary file that the BERT model was trained on.")
 
 # '../predictions'
@@ -227,7 +227,7 @@ def process_output(all_results,
         all_results,
         FLAGS.n_best_size,
         FLAGS.max_answer_length,
-        False, './bert/results/predictions.json', './bert/results/nbest_predictions.json', './bert/results/null_odds.json')
+        False, './bert_client/results/predictions.json', './bert_client/results/nbest_predictions.json', './bert_client/results/null_odds.json')
 
     questions = input_data["data"][0]["paragraphs"][0]["qas"]
 
