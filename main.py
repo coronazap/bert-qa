@@ -1,44 +1,57 @@
-from run_squad import process_inputs, process_result, process_output
-import grpc
-import tensorflow as tf  
+
+from .run_squad import process_inputs, process_result, process_output
+import grpc  
 import json
 import os
 import requests
-import tokenization
+from . import tokenization
 import grpc 
+import tensorflow as tf
 from tensorflow_serving.apis import prediction_service_pb2_grpc, predict_pb2
 
-examples, features = process_inputs()
+tf1 = tf.compat.v1
 
-hostport = "192.168.0.27:8500"
-headers = { "Content-type": "application/json" }
+class Client(object):  
 
-record_iterator = tf.python_io.tf_record_iterator(path='./eval.tf_record')
+    def __init__(self, hostport): 
+        self.hostport = hostport
+        self.headers = { "Content-type": "application/json" }
+        self.channel = grpc.insecure_channel(self.hostport)
+        self.stub = prediction_service_pb2_grpc.PredictionServiceStub(self.channel)
+        self.model_request = predict_pb2.PredictRequest() 
 
-channel = grpc.insecure_channel(hostport)
-stub = prediction_service_pb2_grpc.PredictionServiceStub(channel)
+    def predict(self, input_data):
+        
+        self.generate_test_file(input_data) 
+        self.process_inputs() 
 
-model_request = predict_pb2.PredictRequest()
-model_request.model_spec.name = 'bert-qa'
+        record_iterator = tf1.python_io.tf_record_iterator(path='./eval.tf_record')
 
-all_results = []
+        self.model_request.model_spec.name = 'bert-qa'
 
-for string_record in record_iterator:
-    
-    model_request.inputs['examples'].CopyFrom(
-            tf.contrib.util.make_tensor_proto(
-                string_record,
-                dtype=tf.string,
-                shape=[8]
+        all_results = []
+
+        for string_record in record_iterator:
+            
+            self.model_request.inputs['examples'].CopyFrom(
+                    tf.make_tensor_proto(
+                        string_record,
+                        dtype=tf.string,
+                        shape=[8]
+                    )
             )
-    )
-    
-    result_future = stub.Predict.future(model_request, 30.0)  
-    raw_result = result_future.result().outputs
-    all_results.append(process_result(raw_result))
+            
+            result_future = self.stub.Predict.future(self.model_request, 30.0)  
+            raw_result = result_future.result().outputs
+            all_results.append(process_result(raw_result))
 
-with open('test-file.json') as json_file:
-    data = json.load(json_file)
+        result = process_output(all_results, self.examples, self.features, input_data)
+        return json.dumps(result)
 
-result = process_output(all_results, examples, features, data['data'])
-print(json.dumps(result))
+    def process_inputs(self):
+        self.examples, self.features = process_inputs()
+
+
+    def generate_test_file(self, input_data): 
+        with open('./test-file.json', 'w') as outfile:
+            json.dump(input_data, outfile) 
