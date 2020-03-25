@@ -37,7 +37,7 @@ class Client(object):
                     tf.make_tensor_proto(
                         string_record,
                         dtype=tf.string,
-                        shape=[8]
+                        shape=[1]
                     )
             )
             
